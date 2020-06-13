@@ -166,16 +166,22 @@ void Arena::update(float _dt)
         return m_items[index].type;
     };
 
-    if (dir.x != 0 && getItem(pos.x + dir.x, pos.y + dir.y) == ItemType::Empty)
+    if (dir.x != 0 && getItem(pos.x + dir.x, pos.y + dir.y) != ItemType::Wall)
     {
         newPos.x = pos.x + dir.x;
     }
 
-    if (dir.y != 0 && getItem(pos.x + dir.x, pos.y + dir.y) == ItemType::Empty)
+    if (dir.y != 0 && getItem(pos.x + dir.x, pos.y + dir.y) != ItemType::Wall)
     {
         newPos.y = pos.y + dir.y;
     }
     p->setPos(newPos);
+
+    // TODO: if newPos == Fruit then change Fruit to White
+    // means: Have to remove the fruit from  m_objects[Fruit] 
+    // and add to  m_objects[White]
+
+    // TODO: Remove next line. We don't want any space Empty
     setItem(pos.x, pos.y, ItemType::Empty, m_objects[Empty]);
     setItem(newPos.x, newPos.y, ItemType::Player, m_objects[Player1]);
 

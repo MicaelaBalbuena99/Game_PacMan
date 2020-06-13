@@ -40,7 +40,7 @@ int main()
     setupShaders();
     glClearColor(1, 1, 1, 1);
     glEnable(GL_DEPTH_TEST);
-    RenderGlobals::setView({ 0.0f,10.0f,-20.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,1.0f });
+    RenderGlobals::setView({ 0.0f,50.0f,-10.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,1.0f });
     RenderGlobals::setProjection(45.0f, ASPECT);
 
     Arena arena("maps/map6.png");
@@ -93,7 +93,7 @@ int main()
 
         //ngl::VAOPrimitives::instance()->draw("teapot");
         SDL_GL_SwapWindow(window);
-        SDL_Delay(100000);
+        SDL_Delay(100);
     } // end game loop
 
 
