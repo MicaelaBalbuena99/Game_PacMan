@@ -65,6 +65,7 @@ Arena::Arena(const std::string& _filename)
 
     setItem(4, 4, ItemType::Player, m_objects[Player1]);
     ngl::VAOPrimitives::instance()->createTrianglePlane("floor", m_width, m_height, 1.0f, 1.0f, ngl::Vec3::up());
+   
 }
 
 bool Arena::isEqual(int a[4], int b[4]) {
@@ -161,16 +162,10 @@ void Arena::update(float _dt)
         setItem(newPos.x, newPos.y, ItemType::White, m_objects[White]);
         eatenFruits++;
         std::cout << "update \n";
-       // setItem(newPos.x, newPos.y, ItemType::Player, m_objects[Player1]);
+     
     }
     
-    // TODO: if newPos == Fruit then change Fruit to White
-    // means: Have to remove the fruit from  m_objects[Fruit] 
-    // and add to  m_objects[White]
   
-   // setItem(newPos.x, newPos.y, ItemType::Player, m_objects[Player1]);
-
-
 }
 void Arena::setItem(unsigned int _x, unsigned int _y, ItemType _type, GameObject* _obj)
 {
@@ -188,17 +183,26 @@ void Arena::drawWall(unsigned int _x, unsigned int _y) const
     tx.setPosition(halfX + _x, 0.0f, halfZ + _y);
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
+    shader->setUniform("Colour", 1.0f, 1.0f, 0.0f, 1.0f);
     ngl::VAOPrimitives::instance()->draw(ngl::cube);
 }
 
 void Arena::drawFruit(unsigned int _x, unsigned int _y) const
 {
+    
     float halfZ = -(m_height / 2.0f);
     float halfX = -(m_width / 2.0f);
+ 
     ngl::Transformation tx;
     tx.setPosition(halfX + _x, 0.0f, halfZ + _y);
+
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
-    ngl::VAOPrimitives::instance()->draw(ngl::teapot);
+    shader->setUniform("Colour", 1.0f, 1.0f, 0.0f, 1.0f);
+    ngl::VAOPrimitives::instance()->createSphere("sphere", 0.3f, 10.0f);
+
+    //ngl::VAOPrimitives::instance()->draw(ngl::teapot);
+   
+    ngl::VAOPrimitives::instance()->draw("sphere");
 
 }
