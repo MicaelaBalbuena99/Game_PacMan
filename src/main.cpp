@@ -16,7 +16,7 @@ SDL_GLContext createOpenGLContext(SDL_Window* _window);
 void setupShaders();
 
 static int WIDTH = 1024;
-static int HEIGHT = 720;
+static int HEIGHT = 820;
 static float ASPECT = static_cast<float>(WIDTH) / HEIGHT;
 int main()
 {
@@ -40,8 +40,8 @@ int main()
     setupShaders();
     glClearColor(1, 1, 1, 1);
     glEnable(GL_DEPTH_TEST);
-    RenderGlobals::setView({ 0.0f,50.0f,-10.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,1.0f });
-    RenderGlobals::setProjection(45.0f, ASPECT);
+    RenderGlobals::setView({ 0.0f,45.0f,-3.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,1.0f });
+    RenderGlobals::setProjection(40.0f, ASPECT);
 
     Arena arena("maps/map6.png");
     SDL_Event event;
@@ -93,7 +93,7 @@ int main()
 
         //ngl::VAOPrimitives::instance()->draw("teapot");
         SDL_GL_SwapWindow(window);
-        SDL_Delay(50);
+        SDL_Delay(10);
     } // end game loop
 
 
@@ -110,6 +110,9 @@ SDL_GLContext createOpenGLContext(SDL_Window* _window)
     return SDL_GL_CreateContext(_window);
 
 }
+
+
+
 
 
 void setupShaders()

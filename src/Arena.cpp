@@ -5,6 +5,10 @@
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
 #include "RenderGlobals.h"
+#include <memory>
+#include<ngl/Text.h>
+#include <SDL.h>
+
 
 
 #include "Player.h"
@@ -66,8 +70,13 @@ Arena::Arena(const std::string& _filename)
     setItem(4, 4, ItemType::Player, m_objects[Player1]);
     ngl::VAOPrimitives::instance()->createTrianglePlane("floor", m_width, m_height, 1.0f, 1.0f, ngl::Vec3::up());
     ngl::VAOPrimitives::instance()->createSphere("sphere", 0.3f, 10.0f); //Dots as fruits
-    ngl::VAOPrimitives::instance()->createSphere("pacman", 0.5f, 10.0f); //Dot as PACMAN
-   
+    ngl::VAOPrimitives::instance()->createSphere("pacman", 0.55f, 10.0f); //Dot as PACMAN
+
+    //m_text.reset(new ngl::Text(QFont("Arial", 16)));
+    //m_text->setScreenSize(width(), height());
+   // m_text->setColour(1, 1, 1);
+    
+
 }
 
 bool Arena::isEqual(int a[4], int b[4]) {
@@ -122,11 +131,17 @@ void Arena::draw() const
     {
         o.second->draw();
     }
-    shader->use(ngl::nglCheckerShader);
+    shader->use(ngl::nglDiffuseShader);
     ngl::Transformation tx;
     tx.setPosition(0.0f, -0.6f, 0.0f);
+    shader->setUniform("Colour", 0.0f, 0.0f, 0.0f, 1.0f);//black
+   
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
     ngl::VAOPrimitives::instance()->draw("floor");
+
+    //m_text->renderText(10, 18, "PACMAN");
+
+
 }
 void Arena::update(float _dt)
 {
@@ -150,6 +165,12 @@ void Arena::update(float _dt)
     if (dir.x != 0 && getItem(pos.x + dir.x, pos.y + dir.y) != ItemType::Wall)
     {
         newPos.x = pos.x + dir.x;
+        if (newPos.x >= m_width) {
+            newPos.x = 1;
+        }        
+        if (newPos.x <= 0) {
+            newPos.x = m_width;
+        }
     }
 
     if (dir.y != 0 && getItem(pos.x + dir.x, pos.y + dir.y) != ItemType::Wall)
@@ -162,12 +183,14 @@ void Arena::update(float _dt)
     if (newPos.x && newPos.y && getItem(newPos.x + dir.x, newPos.y + dir.y) == ItemType::Fruit)
     {
         setItem(newPos.x, newPos.y, ItemType::White, m_objects[White]);
+        
         eatenFruits++;
-        std::cout << "update \n";
-     
+        //std::cout << eatenFruits, "FRUITSSSSSSS\n";
+        //SDL_Delay(5000);
+
     }
     
-  
+    
 }
 void Arena::setItem(unsigned int _x, unsigned int _y, ItemType _type, GameObject* _obj)
 {
@@ -185,7 +208,9 @@ void Arena::drawWall(unsigned int _x, unsigned int _y) const
     tx.setPosition(halfX + _x, 0.0f, halfZ + _y);
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
-    shader->setUniform("Colour", 1.0f, 0.0f, 0.0f, 1.0f);
+    shader->use(ngl::nglDiffuseShader);
+    //shader->setUniform("Colour", 0.0f, 0.0f, 0.0f, 1.0f);
+    shader->setUniform("Colour", 0.3f, 0.0f, 1.0f, 0.3f); //blue
     ngl::VAOPrimitives::instance()->draw(ngl::cube);
 }
 
@@ -208,3 +233,4 @@ void Arena::drawFruit(unsigned int _x, unsigned int _y) const
     ngl::VAOPrimitives::instance()->draw("sphere");
 
 }
+

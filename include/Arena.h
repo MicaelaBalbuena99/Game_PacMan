@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include<ngl/Text.h>
 
 class Arena
 {
@@ -27,6 +28,8 @@ private:
 	unsigned int m_height = 0;
 	std::vector<GameItem> m_items;
 	std::unordered_map<std::string, GameObject*> m_objects;
+
+	std::unique_ptr<ngl::Text> m_text; //add PACMAN TEXT
 };
 
 
