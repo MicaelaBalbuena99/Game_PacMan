@@ -15,30 +15,8 @@ const static char* Fruit = "Fruit";
 const static char* Empty = "Empty";
 const static char* White = "White";
 
-int m_channels = 0;
-//enum colourPicke {red, black, white};
-//
-//struct red {
-//
-//    int r = 255;
-//    int g = 0;
-//    int b = 0;
-//
-//};
-//struct black {
-//
-//    int r = 0;
-//    int g = 0;
-//    int b = 0;
-//
-//};
-//struct white {
-//
-//    int r = 255;
-//    int g = 255;
-//    int b = 255;
-//
-//};
+int eatenFruits = 0;
+
 
 
 
@@ -89,7 +67,7 @@ Arena::Arena(const std::string& _filename)
     ngl::VAOPrimitives::instance()->createTrianglePlane("floor", m_width, m_height, 1.0f, 1.0f, ngl::Vec3::up());
 }
 
-bool Arena::isEqual(int a[4] , int b[4] ) {
+bool Arena::isEqual(int a[4], int b[4]) {
     return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3];
 }
 
@@ -127,9 +105,9 @@ void Arena::draw() const
         {
             switch (m_items[index++].type)
             {
-            case ItemType::Empty : std::cout << ' '; break;
+            case ItemType::Empty: std::cout << ' '; break;
             case ItemType::Player: std::cout << 'P'; break;
-            case ItemType::Fruit: std::cout << 'F'; break;
+            case ItemType::Fruit: std::cout << 'F';  drawFruit(x, y); break;
             case ItemType::White: std::cout << '-'; break;
             case ItemType::Wall: std::cout << 'W'; drawWall(x, y);  break;
             }
@@ -175,15 +153,22 @@ void Arena::update(float _dt)
     {
         newPos.y = pos.y + dir.y;
     }
+
     p->setPos(newPos);
 
+    if (newPos.x && newPos.y && getItem(newPos.x + dir.x, newPos.y + dir.y) == ItemType::Fruit)
+    {
+        setItem(newPos.x, newPos.y, ItemType::White, m_objects[White]);
+        eatenFruits++;
+        std::cout << "update \n";
+       // setItem(newPos.x, newPos.y, ItemType::Player, m_objects[Player1]);
+    }
+    
     // TODO: if newPos == Fruit then change Fruit to White
     // means: Have to remove the fruit from  m_objects[Fruit] 
     // and add to  m_objects[White]
-
-    // TODO: Remove next line. We don't want any space Empty
-    setItem(pos.x, pos.y, ItemType::Empty, m_objects[Empty]);
-    setItem(newPos.x, newPos.y, ItemType::Player, m_objects[Player1]);
+  
+   // setItem(newPos.x, newPos.y, ItemType::Player, m_objects[Player1]);
 
 
 }
@@ -204,4 +189,16 @@ void Arena::drawWall(unsigned int _x, unsigned int _y) const
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
     ngl::VAOPrimitives::instance()->draw(ngl::cube);
+}
+
+void Arena::drawFruit(unsigned int _x, unsigned int _y) const
+{
+    float halfZ = -(m_height / 2.0f);
+    float halfX = -(m_width / 2.0f);
+    ngl::Transformation tx;
+    tx.setPosition(halfX + _x, 0.0f, halfZ + _y);
+    auto shader = ngl::ShaderLib::instance();
+    shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
+    ngl::VAOPrimitives::instance()->draw(ngl::teapot);
+
 }

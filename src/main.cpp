@@ -93,7 +93,7 @@ int main()
 
         //ngl::VAOPrimitives::instance()->draw("teapot");
         SDL_GL_SwapWindow(window);
-        SDL_Delay(100);
+        SDL_Delay(50);
     } // end game loop
 
 
