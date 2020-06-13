@@ -68,11 +68,6 @@ Arena::Arena(const std::string& _filename)
     {
         for (unsigned int x = 0; x < m_width; ++x)
         {
-            /*std::cout << img.getColour(x, y)[0];
-            std::cout << img.getColour(x, y)[1];
-            std::cout << img.getColour(x, y)[2];
-            std::cout << img.getColour(x, y)[3];*/
-
             currentColor[0] = img.getColour(x, y)[0];
             currentColor[1] = img.getColour(x, y)[1];
             currentColor[2] = img.getColour(x, y)[2];
@@ -87,19 +82,6 @@ Arena::Arena(const std::string& _filename)
             if (isEqual(currentColor, red)) {
                 setItem(x, y, ItemType::Fruit, m_objects[Fruit]);
             }
-
-            //if (img.getColour(x, y)[0] == black[4])
-            //{
-            //    setItem(x, y, ItemType::Wall, m_objects[Wall]);
-            //}
-            //if (img.getColour(x, y) == white[4])
-            //{
-            //    setItem(x, y, ItemType::White, m_objects[White]);
-            //}
-            //if (img.getColour(x, y) == red[4])
-            //{
-            //   setItem(x, y, ItemType::Fruit, m_objects[Fruit]);
-            //}
         }
     }
 
