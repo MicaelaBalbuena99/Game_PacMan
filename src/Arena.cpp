@@ -65,6 +65,8 @@ Arena::Arena(const std::string& _filename)
 
     setItem(4, 4, ItemType::Player, m_objects[Player1]);
     ngl::VAOPrimitives::instance()->createTrianglePlane("floor", m_width, m_height, 1.0f, 1.0f, ngl::Vec3::up());
+    ngl::VAOPrimitives::instance()->createSphere("sphere", 0.3f, 10.0f); //Dots as fruits
+    ngl::VAOPrimitives::instance()->createSphere("pacman", 0.5f, 10.0f); //Dot as PACMAN
    
 }
 
@@ -98,7 +100,7 @@ void Arena::draw() const
 #else
     system("clear");
 #endif
-    shader->setUniform("Colour", 1.0f, 0.0f, 0.0f, 1.0f);
+    shader->setUniform("Colour", 1.0f, 0.0f, 0.0f, 1.0f); //draw in red
     size_t index = 0;
     for (size_t y = 0; y < m_height; ++y)
     {
@@ -183,7 +185,7 @@ void Arena::drawWall(unsigned int _x, unsigned int _y) const
     tx.setPosition(halfX + _x, 0.0f, halfZ + _y);
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
-    shader->setUniform("Colour", 1.0f, 1.0f, 0.0f, 1.0f);
+    shader->setUniform("Colour", 1.0f, 0.0f, 0.0f, 1.0f);
     ngl::VAOPrimitives::instance()->draw(ngl::cube);
 }
 
@@ -199,7 +201,7 @@ void Arena::drawFruit(unsigned int _x, unsigned int _y) const
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
     shader->setUniform("Colour", 1.0f, 1.0f, 0.0f, 1.0f);
-    ngl::VAOPrimitives::instance()->createSphere("sphere", 0.3f, 10.0f);
+    
 
     //ngl::VAOPrimitives::instance()->draw(ngl::teapot);
    
