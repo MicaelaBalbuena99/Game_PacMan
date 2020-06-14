@@ -162,6 +162,7 @@ void Arena::update(float _dt)
     if (dir.x != 0 && getItem(pos.x + dir.x, pos.y + dir.y) != ItemType::Wall)
     {
         newPos.x = pos.x + dir.x;
+
         if (newPos.x >= m_width) {
             newPos.x = 1;
         }        
@@ -175,19 +176,17 @@ void Arena::update(float _dt)
         newPos.y = pos.y + dir.y;
     }
 
-    p->setPos(newPos);
-
-    if (newPos.x && newPos.y && getItem(newPos.x + dir.x, newPos.y + dir.y) == ItemType::Fruit)
+    
+   
+    if (pos.x && pos.y && getItem(newPos.x + dir.x, newPos.y + dir.y) == ItemType::Fruit)
     {
-        setItem(newPos.x, newPos.y, ItemType::White, m_objects[White]);
+        setItem(pos.x, pos.y, ItemType::White, m_objects[White]);
         
         eatenFruits++;
-        //std::cout << eatenFruits, "FRUITSSSSSSS\n";
-        //SDL_Delay(5000);
 
     }
-    
-    
+    p->setPos(newPos);
+     
 }
 void Arena::setItem(unsigned int _x, unsigned int _y, ItemType _type, GameObject* _obj)
 {
@@ -223,9 +222,6 @@ void Arena::drawFruit(unsigned int _x, unsigned int _y) const
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
     shader->setUniform("Colour", 1.0f, 1.0f, 0.0f, 1.0f);
-    
-
-    //ngl::VAOPrimitives::instance()->draw(ngl::teapot);
    
     ngl::VAOPrimitives::instance()->draw("sphere");
 
