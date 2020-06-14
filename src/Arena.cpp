@@ -72,10 +72,7 @@ Arena::Arena(const std::string& _filename)
     ngl::VAOPrimitives::instance()->createSphere("sphere", 0.3f, 10.0f); //Dots as fruits
     ngl::VAOPrimitives::instance()->createSphere("pacman", 0.55f, 10.0f); //Dot as PACMAN
 
-    //m_text.reset(new ngl::Text(QFont("Arial", 16)));
-    //m_text->setScreenSize(width(), height());
-   // m_text->setColour(1, 1, 1);
-    
+
 
 }
 
@@ -233,4 +230,6 @@ void Arena::drawFruit(unsigned int _x, unsigned int _y) const
     ngl::VAOPrimitives::instance()->draw("sphere");
 
 }
+
+
 

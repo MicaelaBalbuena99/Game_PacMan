@@ -12,12 +12,18 @@
 #include "RenderGlobals.h"
 #include <ngl/NGLStream.h>
 
+
 SDL_GLContext createOpenGLContext(SDL_Window* _window);
 void setupShaders();
 
 static int WIDTH = 1024;
 static int HEIGHT = 820;
 static float ASPECT = static_cast<float>(WIDTH) / HEIGHT;
+int texW = 0;
+int texH = 0;
+
+
+
 int main()
 {
 
@@ -27,6 +33,7 @@ int main()
         return EXIT_FAILURE;
     }
 
+  
     auto window = SDL_CreateWindow("Game", 0, 0, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     auto glContext = createOpenGLContext(window);
@@ -35,7 +42,10 @@ int main()
         std::cerr << "can't create GL context \n";
         exit(EXIT_FAILURE);
     }
+    
     SDL_GL_MakeCurrent(window, glContext);
+
+    
     ngl::NGLInit::instance();
     setupShaders();
     glClearColor(1, 1, 1, 1);
@@ -48,6 +58,8 @@ int main()
     bool quit = false;
     int xDir = 0;
     int yDir = 0;
+
+
 
     while (!quit)
     {
@@ -87,11 +99,8 @@ int main()
         arena.keyEvent(xDir, yDir);
         arena.update(0.1f);
         arena.draw();
-        //auto shader = ngl::ShaderLib::instance();
-        //shader->setUniform("MV", RenderGlobals::getViewMatrix());
-        //shader->setUniform("MVP", RenderGlobals::getVPMatrix());
-
-        //ngl::VAOPrimitives::instance()->draw("teapot");
+        
+       
         SDL_GL_SwapWindow(window);
         SDL_Delay(10);
     } // end game loop
