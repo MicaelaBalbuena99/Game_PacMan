@@ -20,6 +20,7 @@ const static char* Empty = "Empty";
 const static char* White = "White";
 
 int eatenFruits = 0;
+int numberFruits = 0;
 
 
 
@@ -63,6 +64,7 @@ Arena::Arena(const std::string& _filename)
             }
             if (isEqual(currentColor, red)) {
                 setItem(x, y, ItemType::Fruit, m_objects[Fruit]);
+                numberFruits++;
             }
         }
     }
@@ -107,6 +109,7 @@ void Arena::draw() const
     system("clear");
 #endif
     shader->setUniform("Colour", 1.0f, 0.0f, 0.0f, 1.0f); //draw in red
+
     size_t index = 0;
     for (size_t y = 0; y < m_height; ++y)
     {
@@ -132,14 +135,13 @@ void Arena::draw() const
     ngl::Transformation tx;
     tx.setPosition(0.0f, -0.6f, 0.0f);
     shader->setUniform("Colour", 0.0f, 0.0f, 0.0f, 1.0f);//black
-   
+
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
     ngl::VAOPrimitives::instance()->draw("floor");
 
-    //m_text->renderText(10, 18, "PACMAN");
-
 
 }
+
 void Arena::update(float _dt)
 {
     std::cout << "update \n";
@@ -152,6 +154,7 @@ void Arena::update(float _dt)
     auto pos = p->getPos();
     auto dir = p->getDir();
     Vec2 newPos = pos;
+    Vec2 prevPos;
 
     auto getItem = [=](unsigned int _x, unsigned int _y)
     {
@@ -176,16 +179,23 @@ void Arena::update(float _dt)
         newPos.y = pos.y + dir.y;
     }
 
-    
+    p->setPos(newPos);
    
-    if (pos.x && pos.y && getItem(newPos.x + dir.x, newPos.y + dir.y) == ItemType::Fruit)
+    if (newPos.x && newPos.y && getItem(pos.x + dir.x, pos.y + dir.y) == ItemType::Fruit)
     {
-        setItem(pos.x, pos.y, ItemType::White, m_objects[White]);
+        setItem(newPos.x, newPos.y, ItemType::White, m_objects[White]);
         
         eatenFruits++;
+        numberFruits--;
+        std::cout << eatenFruits, "FRUITSSSSSSS\n";
+       // SDL_Delay(5000);
 
     }
-    p->setPos(newPos);
+    if (numberFruits == 0)
+    {
+        std::cout << "END OF THE GAME. PESS ESCAPE\n";
+
+    }
      
 }
 void Arena::setItem(unsigned int _x, unsigned int _y, ItemType _type, GameObject* _obj)
@@ -193,6 +203,10 @@ void Arena::setItem(unsigned int _x, unsigned int _y, ItemType _type, GameObject
     size_t index = _y * m_width + _x;
     m_items[index].type = _type;
     m_items[index].obj = _obj;
+
+   //if there ar no more fruits game is over
+
+
 }
 
 
