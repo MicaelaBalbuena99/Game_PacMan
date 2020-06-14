@@ -25,9 +25,8 @@ void Player::draw() const
 	tx.setPosition(halfX + m_pos.x, 0.0f, halfZ + m_pos.y);
 	auto shader = ngl::ShaderLib::instance();
 	shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
-	shader->setUniform("Colour", 1.0f, 1.0f, 0.0f, 1.0f);
+	shader->setUniform("Colour", 1.0f, 1.0f, 0.0f, 1.0f); //setiing the colour to yellow
 
-	//ngl::VAOPrimitives::instance()->draw(ngl::troll);
 	ngl::VAOPrimitives::instance()->draw("pacman");
 }
 

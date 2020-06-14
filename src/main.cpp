@@ -34,7 +34,7 @@ int main()
     }
 
   
-    auto window = SDL_CreateWindow("Game", 0, 0, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+    auto window = SDL_CreateWindow("PACMAN", 0, 0, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
     auto glContext = createOpenGLContext(window);
     if (!glContext)
@@ -58,8 +58,6 @@ int main()
     bool quit = false;
     int xDir = 0;
     int yDir = 0;
-
-
 
     while (!quit)
     {

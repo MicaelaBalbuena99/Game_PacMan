@@ -10,7 +10,7 @@
 #include <SDL.h>
 
 
-
+#include "Ghost.h"
 #include "Player.h"
 
 const static char* Player1 = "Player1";
@@ -18,6 +18,8 @@ const static char* Wall = "Wall";
 const static char* Fruit = "Fruit";
 const static char* Empty = "Empty";
 const static char* White = "White";
+const static char* GhostRed = "GhostRed";
+
 
 int eatenFruits = 0;
 int numberFruits = 0;
@@ -33,7 +35,7 @@ Arena::Arena(unsigned int _w, unsigned int _h)
     createDefaultObjects();
 }
 
-
+// Here the arena gets the colour information from the image map.
 Arena::Arena(const std::string& _filename)
 {
     ngl::Image img(_filename);
@@ -70,11 +72,11 @@ Arena::Arena(const std::string& _filename)
     }
 
     setItem(4, 4, ItemType::Player, m_objects[Player1]);
+    setItem(5, 5, ItemType::Ghost, m_objects[GhostRed]);
     ngl::VAOPrimitives::instance()->createTrianglePlane("floor", m_width, m_height, 1.0f, 1.0f, ngl::Vec3::up());
     ngl::VAOPrimitives::instance()->createSphere("sphere", 0.3f, 10.0f); //Dots as fruits
     ngl::VAOPrimitives::instance()->createSphere("pacman", 0.55f, 10.0f); //Dot as PACMAN
-
-
+    ngl::VAOPrimitives::instance()->createSphere("ghost", 0.50f, 10.0f); //Dot as GHOST
 
 }
 
@@ -89,13 +91,16 @@ void Arena::createDefaultObjects()
     m_objects[Empty] = new GameObject();
     m_objects[White] = new GameObject();
     m_objects[Player1] = new Player(Vec2(4, 4), m_width, m_height);
+    m_objects[GhostRed] = new Player(Vec2(16, 15), m_width, m_height); //set possition
+
+
 
 }
 
 void Arena::keyEvent(int _x, int _y)
 {
     std::cout << _x << ' ' << _y << '\n';
-    m_objects[Player1]->moveEvent(Vec2(_x, _y));
+    m_objects[Player1]->moveEvent(Vec2(_x, _y)); // key events are passed to move event for player
 }
 
 
@@ -151,10 +156,16 @@ void Arena::update(float _dt)
         o.second->update(_dt);
     }
     Player* p = static_cast<Player*>(m_objects[Player1]);
-    auto pos = p->getPos();
-    auto dir = p->getDir();
-    Vec2 newPos = pos;
-    Vec2 prevPos;
+    Ghost* g = static_cast<Ghost*>(m_objects[GhostRed]);
+
+    auto pos = p->getPos(); //gets position 
+    auto dir = p->getDir();//dir will be holdingthe position coming from getDir
+
+    auto posG = g->getPosG(); //get position from Ghost
+    auto dirG = g->getDirG();// get direction from ghost
+
+    Vec2 newPos = pos; // new position will be stored in NewPos
+    Vec2 newPosG = posG;// New ghost's position
 
     auto getItem = [=](unsigned int _x, unsigned int _y)
     {
@@ -162,15 +173,18 @@ void Arena::update(float _dt)
         return m_items[index].type;
     };
 
-    if (dir.x != 0 && getItem(pos.x + dir.x, pos.y + dir.y) != ItemType::Wall)
+    if (dir.x && dirG.x != 0 && getItem(pos.x + dir.x, pos.y + dir.y) != ItemType::Wall)
     {
         newPos.x = pos.x + dir.x;
-
-        if (newPos.x >= m_width) {
+        newPosG.x = posG.x + dirG.x;
+        //todo 2 diiff
+        if (newPos.x || newPosG.x  >= m_width) {
             newPos.x = 1;
+            newPosG.x = 1;
         }        
-        if (newPos.x <= 0) {
+        if (newPos.x || newPosG.x <= 0) {
             newPos.x = m_width;
+            newPosG.x = m_width;
         }
     }
 
@@ -180,6 +194,9 @@ void Arena::update(float _dt)
     }
 
     p->setPos(newPos);
+    g->chase(newPos); // chase funtion recives pacman's new position
+
+
    
     if (newPos.x && newPos.y && getItem(pos.x + dir.x, pos.y + dir.y) == ItemType::Fruit)
     {
@@ -193,7 +210,7 @@ void Arena::update(float _dt)
     }
     if (numberFruits == 0)
     {
-        std::cout << "END OF THE GAME. PESS ESCAPE\n";
+        std::cout <<"END OF THE GAME. PESS ESCAPE\n";
 
     }
      
@@ -203,9 +220,6 @@ void Arena::setItem(unsigned int _x, unsigned int _y, ItemType _type, GameObject
     size_t index = _y * m_width + _x;
     m_items[index].type = _type;
     m_items[index].obj = _obj;
-
-   //if there ar no more fruits game is over
-
 
 }
 
@@ -219,7 +233,6 @@ void Arena::drawWall(unsigned int _x, unsigned int _y) const
     auto shader = ngl::ShaderLib::instance();
     shader->setUniform("MVP", RenderGlobals::getVPMatrix() * tx.getMatrix());
     shader->use(ngl::nglDiffuseShader);
-    //shader->setUniform("Colour", 0.0f, 0.0f, 0.0f, 1.0f);
     shader->setUniform("Colour", 0.3f, 0.0f, 1.0f, 0.3f); //blue
     ngl::VAOPrimitives::instance()->draw(ngl::cube);
 }

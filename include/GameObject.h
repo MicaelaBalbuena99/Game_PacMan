@@ -7,8 +7,10 @@ class GameObject
 public:
 	GameObject() = default;
 	~GameObject() = default;
+
 	virtual void update(float _dt);
 	virtual void draw() const;
+	virtual void drawG() const;
 	virtual void moveEvent(const Vec2& _m);
 	
 private:
